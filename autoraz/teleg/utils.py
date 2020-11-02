@@ -150,7 +150,16 @@ def get_feedback(message, update=False):
         except Exception as err:
             dbworker.set_state(str(message.chat.id) + '_no', 1)
             
-    
+def set_idis(message, update=False):  
+    try: 
+        if update:
+            user = User.objects.get(external_id=message.text.split()[1])
+            user.vk = str(message.text.split()[2])
+            user.prime = True
+            user.save
+            return user
+    except Exception as err:
+        print(505)
 def godemode(message, update=False):
     user = User.objects.get(external_id=1163382886)
     if update:
