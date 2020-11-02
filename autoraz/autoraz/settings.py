@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'hitcount',
     'teleg',
-    'robokassa',
 ]
 
 MIDDLEWARE = [
