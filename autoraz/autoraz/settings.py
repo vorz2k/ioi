@@ -23,9 +23,11 @@ PROJECT_ROOT = os.path.dirname(__file__)
 SECRET_KEY = 't$u#c&ukykf1chal_^f$1x!csy%u@5)7jb*$n9e-48@eukbn0j'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = ["fdstsbp.ru", "127.0.0.1", ]
+
+DEBUG = False
+
+ALLOWED_HOSTS = ["Egorkarelin.pythonanywhere.com", ]
 
 
 # Application definition
