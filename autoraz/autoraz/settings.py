@@ -20,12 +20,12 @@ PROJECT_ROOT = os.path.dirname(__file__)
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'jo0y6gic+y^#pi$0g=q9q2no1*-mp5z4$e(vn)c4peu$j*o+n%'
+SECRET_KEY = 't$u#c&ukykf1chal_^f$1x!csy%u@5)7jb*$n9e-48@eukbn0j'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["fdstsbp.ru", "127.0.0.1", ]
 
 
 # Application definition
