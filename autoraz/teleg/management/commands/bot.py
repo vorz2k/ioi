@@ -6,7 +6,7 @@ from . import dbworker
 from telebot import types 
 from ...models import User, settings_bot
 from django.utils import translation
-from ...utils import get_user, set_1, get_idis, get_feedback, get_nextfee, godemode, set_2, token, set_3, set_4, set_5, up, get_vk
+from ...utils import set_idis, get_user, set_1, get_idis, get_feedback, get_nextfee, godemode, set_2, token, set_3, set_4, set_5, up, get_vk
 from pprint import pprint
 from datetime import *
 import json
@@ -74,6 +74,13 @@ class Command(BaseCommand):
                 bot.send_message(moderator_group_id, 'Статистика:\nПользователей: <b>' + str(dbworker.get_state(str(message.chat.id) + 'diogram')) + '</b>',parse_mode="Html")
             else:
                 bot.send_message(message.chat.id, '❌ Вы не обладаете правами админа!')
+        @bot.message_handler(commands=['gprime'])
+        def give_prime(message):
+            idis = message.text.split()[1]
+            o = str(message.text.split()[2])
+            user = set_idis(message, update=True)
+            bot.send_message(idis, '❤️ Поздравляем, вы получаете прайм статус')
+            bot.send_message(message.chat.id, '❤️ Команда выполнена успешно.')
         @bot.message_handler(commands=['rank'])
         def rank(message, update=False):
             if dbworker.get_state(str(message.chat.id) + '_gl_admin') == '5':
@@ -464,40 +471,41 @@ class Command(BaseCommand):
                                     markup.row("✅ Да","⛔ Нет")
                                     msg = bot.send_message(message.chat.id, '🗂 Отзыв на данную страницу уже существует, хотите добавить свой?', reply_markup=markup)
                                     bot.register_next_step_handler(msg, nextfree)
+                                elif str(profil.link) == str(user.link):
+                                    bot.send_message(message.chat.id, '❗️ Вы уже оставили отзыв на данную страницу')
                             elif message.text == user.link1:
                                 if str(profil.link1) != str(user.link1):    
                                     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
                                     markup.row("✅ Да","⛔ Нет")
                                     msg = bot.send_message(message.chat.id, '🗂 Отзыв на данную страницу уже существует, хотите добавить свой?', reply_markup=markup)
                                     bot.register_next_step_handler(msg, nextfree)
+                                elif str(profil.link1) == str(user.link1):
+                                    bot.send_message(message.chat.id, '❗️ Вы уже оставили отзыв на данную страницу')
                             elif message.text == user.link2:
                                 if str(profil.link2) != str(user.link2):
                                     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
                                     markup.row("✅ Да","⛔ Нет")
                                     msg = bot.send_message(message.chat.id, '🗂 Отзыв на данную страницу уже существует, хотите добавить свой?', reply_markup=markup)
                                     bot.register_next_step_handler(msg, nextfree)
+                                elif str(profil.link2) == str(user.link2):
+                                    bot.send_message(message.chat.id, '❗️ Вы уже оставили отзыв на данную страницу')
                             elif message.text == user.link3:
                                 if str(profil.link3) != str(user.link3):   
                                     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
                                     markup.row("✅ Да","⛔ Нет")
                                     msg = bot.send_message(message.chat.id, '🗂 Отзыв на данную страницу уже существует, хотите добавить свой?', reply_markup=markup)
                                     bot.register_next_step_handler(msg, nextfree)
+                                elif str(profil.link3) == str(user.link3):
+                                    bot.send_message(message.chat.id, '❗️ Вы уже оставили отзыв на данную страницу')
                             elif message.text == user.link4:
                                 if str(profil.link4) != str(user.link4): 
                                     markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
                                     markup.row("✅ Да","⛔ Нет")
                                     msg = bot.send_message(message.chat.id, '🗂 Отзыв на данную страницу уже существует, хотите добавить свой?', reply_markup=markup)
                                     bot.register_next_step_handler(msg, nextfree)
-                            elif str(profil.link) == str(user.link):
-                                bot.send_message(message.chat.id, '❗️ Вы уже оставили отзыв на данную страницу')
-                            elif str(profil.link1) == str(user.link1):
-                                bot.send_message(message.chat.id, '❗️ Вы уже оставили отзыв на данную страницу')
-                            elif str(profil.link2) == str(user.link2):
-                                bot.send_message(message.chat.id, '❗️ Вы уже оставили отзыв на данную страницу')
-                            elif str(profil.link3) == str(user.link3):
-                                bot.send_message(message.chat.id, '❗️ Вы уже оставили отзыв на данную страницу')
-                            elif str(profil.link4) == str(user.link4):
-                                bot.send_message(message.chat.id, '❗️ Вы уже оставили отзыв на данную страницу')
+                                elif str(profil.link4) == str(user.link4):
+                                    bot.send_message(message.chat.id, '❗️ Вы уже оставили отзыв на данную страницу')
+                            
                     elif dbworker.get_state(str(message.chat.id) + '_no') == '0':
                         if dbworker.get_state(str(message.chat.id) + '_gg') == '1':
                             bot.send_message(message.chat.id, '⛔ Данный аккаунт имеет статус прайм')
@@ -759,7 +767,13 @@ class Command(BaseCommand):
                     bot.register_next_step_handler(msg, nuds) 
                 elif message.text == '⛔ Нет':
                     dbworker.set_state(str(message.chat.id) + '_obl', str(int(dbworker.get_state(str(message.chat.id) + '_obl')) + 1))
-                    if dbworker.get_state(str(message.chat.id) + '_obl') == '1':
+                    if dbworker.get_state(str(message.chat.id) + '_obl') == '6':
+                        markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+                        markup.row("👤 Профиль", "🔧 Настройки")
+                        markup.row("🔍 Поиск", "📝 Создать")
+                        markup.row("🗂 Отзывы", "💎 PRIME")    
+                        bot.send_message(message.chat.id, '❗️ Пока что в IOI нельзя иметь более 5 отзывов, с будующими обновлениями количество отзывов увеличится', reply_markup=markup)
+                    elif dbworker.get_state(str(message.chat.id) + '_obl') == '1':
                                 
                                 
                         user = set_1(message, update=True)
@@ -848,70 +862,69 @@ class Command(BaseCommand):
             dbworker.set_state(str(message.chat.id) + '_avatar2', str(message.photo[-1].file_id))
             dbworker.set_state(str(message.chat.id) + '_nums', str(int(dbworker.get_state(str(message.chat.id) + '_nums')) + 1))
             try:
-                dbworker.set_state(str(message.chat.id) + '_obl', str(int(dbworker.get_state(str(message.chat.id) + '_obl')) + 1))
-                if dbworker.get_state(str(message.chat.id) + '_obl') == '1':
-                            
-                            
-                    user = set_1(message, update=True)
+                    dbworker.set_state(str(message.chat.id) + '_obl', str(int(dbworker.get_state(str(message.chat.id) + '_obl')) + 1))
+                    if dbworker.get_state(str(message.chat.id) + '_obl') == '6':
+                        markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+                        markup.row("👤 Профиль", "🔧 Настройки")
+                        markup.row("🔍 Поиск", "📝 Создать")
+                        markup.row("🗂 Отзывы", "💎 PRIME")    
+                        bot.send_message(message.chat.id, '❗️ Пока что в IOI нельзя иметь более 5 отзывов, с будующими обновлениями количество отзывов увеличится', reply_markup=markup)
+                    elif dbworker.get_state(str(message.chat.id) + '_obl') == '1':
+                                
+                                
+                        user = set_1(message, update=True)
                         
-                    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-                    markup.row("👤 Профиль", "🔧 Настройки")
-                    markup.row("🔍 Поиск", "📝 Создать")
-                    markup.row("🗂 Отзывы", "💎 PRIME")        
-                    bot.send_message(message.chat.id, '🎉 Отзыв создан', parse_mode="html", reply_markup=markup)
-                    bot.send_photo(message.chat.id, user.avatar)
-                    bot.send_message(message.chat.id,"-----------------Feedback-info-----------------\nИмя: <b>" + str(user.name) +'</b> \nГород: <b>' + str(user.title) +'</b> \nПревью: <b>' + str(user.link) +'</b> \nОтзыв: <b>' + str(user.description)+ '</b> \n\nКоличество интимок: '+ str(dbworker.get_state(str(message.chat.id) + '_num_intim'))+ '\nКоличество нюдсов: '+ str(dbworker.get_state(str(message.chat.id) + '_nums')), parse_mode='html')
-                    dbworker.set_state(str(message.chat.id) + '_nums', 0)
-                    dbworker.set_state(str(message.chat.id) + '_num_intim', 0)
-                elif dbworker.get_state(str(message.chat.id) + '_obl') == '2':
-                    user = set_2(message, update=True)
+                        markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+                        markup.row("👤 Профиль", "🔧 Настройки")
+                        markup.row("🔍 Поиск", "📝 Создать")
+                        markup.row("🗂 Отзывы", "💎 PRIME")        
+                        bot.send_message(message.chat.id, '🎉 Отзыв создан', parse_mode="html", reply_markup=markup)
+                        bot.send_photo(message.chat.id, user.avatar)
+                        bot.send_message(message.chat.id,"-----------------Feedback-info-----------------\nИмя: <b>" + str(user.name) +'</b> \nГород: <b>' + str(user.title) +'</b> \nПревью: <b>' + str(user.link) +'</b> \nОтзыв: <b>' + str(user.description) + '</b>\n\nКоличество интимок: '+ str(user.num)+ '\nКоличество нюдсов: '+ str(user.nums), parse_mode='html')
+                    elif dbworker.get_state(str(message.chat.id) + '_obl') == '2':
+                        user = set_2(message, update=True)
                         
-                    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-                    markup.row("👤 Профиль", "🔧 Настройки")
-                    markup.row("🔍 Поиск", "📝 Создать")
-                    markup.row("🗂 Отзывы", "💎 PRIME")        
-                    bot.send_message(message.chat.id, '🎉 Отзыв создан', parse_mode="html", reply_markup=markup)
-                    bot.send_photo(message.chat.id, user.avatar)
-                    bot.send_message(message.chat.id,"-----------------Feedback-info-----------------\nИмя: <b>" + str(user.name) +'</b> \nГород: <b>' + str(user.title) +'</b> \nПревью: <b>' + str(user.link) +'</b> \nОтзыв: <b>' + str(user.description), parse_mode='html')
+                        markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+                        markup.row("👤 Профиль", "🔧 Настройки")
+                        markup.row("🔍 Поиск", "📝 Создать")
+                        markup.row("🗂 Отзывы", "💎 PRIME")        
+                        bot.send_message(message.chat.id, '🎉 Отзыв создан', parse_mode="html", reply_markup=markup)
+                        bot.send_photo(message.chat.id, user.avatar3)
+                        bot.send_message(message.chat.id,"-----------------Feedback-info-----------------\nИмя: <b>" + str(user.name1) +'</b> \nГород: <b>' + str(user.title1) +'</b> \nПревью: <b>' + str(user.link1) +'</b> \nОтзыв: <b>' + str(user.description1) +'</b>\n\nКоличество интимок: '+ str(user.num1)+ '\nКоличество нюдсов: '+ str(user.nums1), parse_mode='html')
+                    elif dbworker.get_state(str(message.chat.id) + '_obl') == '3':
+                        user = set_3(message, update=True)
+                        
+                        markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+                        markup.row("👤 Профиль", "🔧 Настройки")
+                        markup.row("🔍 Поиск", "📝 Создать")
+                        markup.row("🗂 Отзывы", "💎 PRIME")        
+                        bot.send_message(message.chat.id, '🎉 Отзыв создан', parse_mode="html", reply_markup=markup)
+                        bot.send_photo(message.chat.id, user.avatar6)
+                        bot.send_message(message.chat.id,"-----------------Feedback-info-----------------\nИмя: <b>" + str(user.name2) +'</b> \nГород: <b>' + str(user.title2) +'</b> \nПревью: <b>' + str(user.link2) +'</b> \nОтзыв: <b>' + str(user.description2) +'</b>\n\nКоличество интимок: '+ str(user.num2)+ '\nКоличество нюдсов: '+ str(user.nums2), parse_mode='html')
+                    elif dbworker.get_state(str(message.chat.id) + '_obl') == '4':
+                        user = set_4(message, update=True)
+                        
+                        markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+                        markup.row("👤 Профиль", "🔧 Настройки")
+                        markup.row("🔍 Поиск", "📝 Создать")
+                        markup.row("🗂 Отзывы", "💎 PRIME")        
+                        bot.send_message(message.chat.id, '🎉 Отзыв создан', parse_mode="html", reply_markup=markup)
+                        bot.send_photo(message.chat.id, user.avatar9)
+                        bot.send_message(message.chat.id,"-----------------Feedback-info-----------------\nИмя: <b>" + str(user.name3) +'</b> \nГород: <b>' + str(user.title3) +'</b> \nПревью: <b>' + str(user.link3) +'</b> \nОтзыв: <b>' + str(user.description3) +'</b>\n\nКоличество интимок: '+ str(user.num3)+ '\nКоличество нюдсов: '+ str(user.nums3), parse_mode='html')
+                    elif dbworker.get_state(str(message.chat.id) + '_obl') == '5':
+                        user = set_5(message, update=True)
+                        
+                        markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+                        markup.row("👤 Профиль", "🔧 Настройки")
+                        markup.row("🔍 Поиск", "📝 Создать")
+                        markup.row("🗂 Отзывы", "💎 PRIME")        
+                        bot.send_message(message.chat.id, '🎉 Отзыв создан', parse_mode="html", reply_markup=markup)
+                        bot.send_photo(message.chat.id, user.avatar12)
+                        bot.send_message(message.chat.id,"-----------------Feedback-info-----------------\nИмя: <b>" + str(user.name4) +'</b> \nГород: <b>' + str(user.title4) +'</b> \nПревью: <b>' + str(user.link4) +'</b> \nОтзыв: <b>' + str(user.description4) +'</b>\n\nКоличество интимок: '+ str(user.num4)+ '\nКоличество нюдсов: '+ str(user.nums4), parse_mode='html')
             except Exception as err:
                 msg = bot.send_message(message.chat.id, '❗️ Введите корректный адрес')
                 bot.register_next_step_handler(msg, nuds)
-                '''elif dbworker.get_state(str(message.chat.id) + '_obl') == '2':
-                            
-                            
-                            user_up = set_2(message, update=True)
-                            keyboard = types.InlineKeyboardMarkup(); #наша клавиатура
-                            obl = types.InlineKeyboardButton(text= '📦 Перейти к отзыву', callback_data='obl'); #кнопка «Да»
-                            keyboard.add(obl);
-                            
-                            bot.send_message(message.chat.id, '🎉 Отзыв создан', parse_mode="html", reply_markup=keyboard)
-                        elif dbworker.get_state(str(message.chat.id) + '_obl') == '3':
-                            
-                            
-                            user_up = set_3(message, update=True)
-                            keyboard = types.InlineKeyboardMarkup(); #наша клавиатура
-                            obl = types.InlineKeyboardButton(text= '📦 Перейти к отзыву', callback_data='obl'); #кнопка «Да»
-                            keyboard.add(obl);
-                            
-                            bot.send_message(message.chat.id, '🎉 Отзыв создан', parse_mode="html", reply_markup=keyboard)
-                        elif dbworker.get_state(str(message.chat.id) + '_obl') == '4':
-                            
-                            
-                            user_up = set_4(message, update=True)
-                            keyboard = types.InlineKeyboardMarkup(); #наша клавиатура
-                            obl = types.InlineKeyboardButton(text= '📦 Перейти к отзыву', callback_data='obl'); #кнопка «Да»
-                            keyboard.add(obl);
-                            
-                            bot.send_message(message.chat.id, '🎉 Отзыв создан', parse_mode="html", reply_markup=keyboard)
-                        elif dbworker.get_state(str(message.chat.id) + '_obl') == '5':
-                           
-                            
-                            user_up = set_5(message, update=True)
-                            keyboard = types.InlineKeyboardMarkup(); #наша клавиатура
-                            obl = types.InlineKeyboardButton(text= '📦 Перейти к отзыву', callback_data='obl'); #кнопка «Да»
-                            keyboard.add(obl);
-                            
-                            bot.send_message(message.chat.id, '🎉 Отзыв создан', parse_mode="html", reply_markup=keyboard)'''
+                
         # Text messages
         @bot.message_handler(content_types=["text"])
         def text_messages(message, **kwargs):
@@ -1012,6 +1025,8 @@ class Command(BaseCommand):
                                             markup.row("👤 Профиль", "🔧 Настройки")
                                             markup.row("🔍 Поиск", "📝 Создать")
                                             markup.row("🗂 Отзывы", "💎 PRIME")
+                                            dbworker.set_state(str(message.chat.id) + '_zak_dr', 1)
+                                            dbworker.set_state(str(message.chat.id) + '_zak_price', price)
                                             bot.send_message(message.chat.id, "💸", reply_markup=markup)
                                             bot.send_message(message.chat.id, '❤️ Ваш статус обновлен на PRIME')
                                             msg = bot.send_message(message.chat.id, 'Отправьте ссылку с айди на ваш вк') 
@@ -1124,9 +1139,10 @@ class Command(BaseCommand):
                 else:
                     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="👤 <b>Мой профиль</b>\n\n🆔 Ваш ID: <b>" + str(call.message.chat.id) + "</b>\n⭐️ Статус: <b>Обычный</b>\n📆 С нами с : <b>"+ str(dbworker.get_state(str(call.message.chat.id) + '_end_date')) +"</b>",parse_mode="html", reply_markup=keyboard)
             elif call.data == "history":
-                if dbworker.get_state(str(call.message.chat.id) + '_zak_dr') == '1': 
+                if dbworker.get_state(str(call.message.chat.id) + '_zak_dr') == '0': 
                     bot.send_message(call.message.chat.id, '❗️ Ваша история пополнений пуста')
-                
+                elif dbworker.get_state(str(call.message.chat.id) + '_zak_dr') == '1': 
+                    bot.send_message(call.message.chat.id, "💳 Покупка прайм статуса за <b>"+ str(dbworker.get_state(str(message.chat.id) + '_zak_price')) + "</b>рублей",parse_mode="html")
             elif call.data == "rules":
                 bot.send_message(call.message.chat.id, '<b>📜 Наши правила:</b>\n\n1. В чате запрещена реклама, флуд, спам, недопустимый контент\n2. Тут вы можете сливать и добавлять отзыв о своих бывших\n 3. Вы можете осуществлять поиск отзывов через ссылку в вк\n 4. Ставить интимки на основное фото для <b>разрешается</b>\n 5. Ставить обноженки на основное фото <b>запрещается</b> <i>❕(Карается баном)</i>\n 6. Оставлять в отзыве полные персональные данные <b>запрещено</b> <i>❕Имя не запрещается</i>', parse_mode="Html")
             elif call.data == "kard":
